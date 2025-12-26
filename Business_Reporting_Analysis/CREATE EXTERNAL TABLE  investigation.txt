@@ -1,0 +1,24 @@
+CREATE EXTERNAL TABLE investigation.orders_raw (
+    order_id STRING,
+    customer_id STRING,
+    order_date STRING,
+    status STRING,
+    payment_method STRING,
+    shipping_address STRING,
+    billing_address STRING,
+    discount_amount DOUBLE,
+    tax_amount DOUBLE,
+    shipping_cost DOUBLE,
+    total_amount DOUBLE,
+    currency STRING,
+    created_at STRING,
+    updated_at STRING,
+    subtotal DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\""
+)
+LOCATION 's3://fba-investigation/raw/'
+TBLPROPERTIES ('skip.header.line.count'='1');
