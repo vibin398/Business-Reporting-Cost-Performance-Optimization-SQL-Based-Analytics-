@@ -1,0 +1,21 @@
+CREATE TABLE investigation.orders_parquet
+WITH (
+    format = 'PARQUET',
+    parquet_compression = 'SNAPPY',
+    partitioned_by = ARRAY['order_year', 'order_month'],
+    external_location = 's3://fba-investigation/parquet_orders/'
+) AS
+SELECT *,
+    year(
+      COALESCE(
+        try(date_parse(order_date, '%Y-%m-%dT%H:%i:%s.%f')),
+        try(date_parse(order_date, '%Y-%m-%dT%H:%i:%s'))
+      )
+    ) AS order_year,
+    month(
+      COALESCE(
+        try(date_parse(order_date, '%Y-%m-%dT%H:%i:%s.%f')),
+        try(date_parse(order_date, '%Y-%m-%dT%H:%i:%s'))
+      )
+    ) AS order_month
+FROM investigation.orders_raw;
